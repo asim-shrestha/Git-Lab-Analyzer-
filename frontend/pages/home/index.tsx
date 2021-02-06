@@ -1,7 +1,12 @@
 import { Box, Button, TextField, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import DatePicker from "react-datepicker"
-import 'react-datepicker/dist/react-datepicker.css'
+import 'date-fns';
+import Grid from '@material-ui/core/Grid';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import React, {useState} from "react";
 import Image from "next/image";
 
@@ -14,10 +19,21 @@ const useStyles = makeStyles({
   },
 });
 
+
+
 const index = () => {
     const classes = useStyles();
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = React.useState<Date | null>(new Date('01-02-2021'));
+    const [endDate, setEndDate] =  React.useState<Date | null>(new Date('01-05-2021'));
+
+    const handleStartChange = (date: Date | null) => {
+        setStartDate(date);
+    };
+
+    const handleEndChange = (date: Date | null) => {
+        setEndDate(date);
+      };
+
     return (
         <Box
             className={classes.backgroundGradient}
@@ -65,30 +81,42 @@ const index = () => {
                     justifyContent="column"
                     alignItems="column"
                 >
-                    <div className='StartDatePicker'>
-                        <DatePicker
-                            selected={startDate}
-                            onChange={date => setStartDate(date)}
-                            dateFormat = 'dd/MM/yyyy'
-                            minDate= {new Date("01-02-2021")}
-                            scrollableMonthYearDropdown
-                            placeholderText="Start date"
-                            
-                        />
+                    <div className='Date picker'>
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Grid container justify="space-around">
+                                <KeyboardDatePicker
+                                    disableToolbar
+                                    variant="inline"
+                                    format="dd/MM/yyyy"
+                                    margin="normal"
+                                    id="start-date-picker"
+                                    label="Start Date:"
+                                    value={startDate}
+                                    onChange={handleStartChange}
+                                    autoOk={true}
+                                    KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                    }}
+                                
+                                />
+                        
+                                <KeyboardDatePicker
+                                    disableToolbar
+                                    variant="inline"
+                                    format="dd/MM/yyyy"
+                                    margin="normal"
+                                    id="end-date-picker"
+                                    label="End Date:"
+                                    value={endDate}
+                                    onChange={handleEndChange}
+                                    autoOk={true}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </Grid>
+                        </MuiPickersUtilsProvider>
                     </ div>
-
-                    <div className='EndDatePicker'>
-                        <DatePicker
-                            selected = {endDate}
-                            onChange = {date => date && setEndDate(date)}
-                            dateFormat = 'dd/MM/yyyy'
-                            maxDate= {new Date("01-06-2021")}
-                            scrollableMonthYearDropdown
-                            placeholderText="End Date:"
-                            
-                        />
-                    </ div>
-
                 </Box>
 
             </Box>
