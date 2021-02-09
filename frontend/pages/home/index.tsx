@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
-  KeyboardDatePicker,
+  DatePicker,
 } from '@material-ui/pickers';
 import React, {useState} from "react";
 import Image from "next/image";
@@ -84,7 +84,7 @@ const index = () => {
                     <div className='Date picker'>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid container justify="space-around">
-                                <KeyboardDatePicker
+                                <DatePicker
                                     disableToolbar
                                     variant="inline"
                                     format="dd/MM/yyyy"
@@ -100,7 +100,7 @@ const index = () => {
                                 
                                 />
                         
-                                <KeyboardDatePicker
+                                <DatePicker
                                     disableToolbar
                                     variant="inline"
                                     format="dd/MM/yyyy"
@@ -124,3 +124,4 @@ const index = () => {
         </Box>
     );
 };
+        export default index;
