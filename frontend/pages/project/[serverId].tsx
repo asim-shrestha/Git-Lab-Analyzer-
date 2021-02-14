@@ -5,7 +5,6 @@ import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 import React, {useState, useEffect} from "react";
-import Image from "next/image";
 import {useRouter} from "next/router";
 import axios, {AxiosResponse} from "axios";
 import CardLayout from "../../components/CardLayout";
@@ -15,7 +14,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const useStyles = makeStyles({
   card: {
-    background: "white",
+    background: "white"
   },
 });
 
@@ -77,55 +76,59 @@ const index = () => {
                 renderInput={(params) => <TextField {...params} label="Search Projects" variant="outlined" />}
             /> }
 
-            <Box
-                    className={classes.card}
-                    boxShadow={20}
-                    width="60vw"
-                    height="10vh"
-                    minWidth="250px"
-                    minHeight="10vh"
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="column"
-                    alignItems="column"
-            >
-                    <div className='Date picker'>
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <Grid container justify="space-around">
-                                <KeyboardDatePicker
-                                    disableToolbar
-                                    variant="inline"
-                                    format="dd/MM/yyyy"
-                                    margin="normal"
-                                    id="start-date-picker"
-                                    label="Start Date:"
-                                    value={startDate}
-                                    onChange={handleStartChange}
-                                    autoOk={true}
-                                    KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                    }}
-                                
-                                />
-                        
-                                <KeyboardDatePicker
-                                    disableToolbar
-                                    variant="inline"
-                                    format="dd/MM/yyyy"
-                                    margin="normal"
-                                    id="end-date-picker"
-                                    label="End Date:"
-                                    value={endDate}
-                                    onChange={handleEndChange}
-                                    autoOk={true}
-                                    KeyboardButtonProps={{
+            <div className='menu' style={{ marginTop: `30px` }}>
+
+                <Box
+                        margin
+                        className={classes.card}
+                        boxShadow={0}
+                        width="56vw"
+                        height="10vh"
+                        minWidth="260px"
+                        minHeight="10vh"
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="column"
+                        alignItems="column"
+                >
+                        <div className='Date picker'>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <Grid container justify="space-around">
+                                    <KeyboardDatePicker
+                                        disableToolbar
+                                        variant="inline"
+                                        format="dd/MM/yyyy"
+                                        margin="normal"
+                                        id="start-date-picker"
+                                        label="Start Date:"
+                                        value={startDate}
+                                        onChange={handleStartChange}
+                                        autoOk={true}
+                                        KeyboardButtonProps={{
                                         'aria-label': 'change date',
-                                    }}
-                                />
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-                    </ div>
+                                        }}
+
+                                    />
+
+                                    <KeyboardDatePicker
+                                        disableToolbar
+                                        variant="inline"
+                                        format="dd/MM/yyyy"
+                                        margin="normal"
+                                        id="end-date-picker"
+                                        label="End Date:"
+                                        value={endDate}
+                                        onChange={handleEndChange}
+                                        autoOk={true}
+                                        KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                        }}
+                                    />
+                                </Grid>
+                            </MuiPickersUtilsProvider>
+                        </ div>
                 </Box>
+            </div>
         </CardLayout>
 
     );
