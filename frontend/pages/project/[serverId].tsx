@@ -1,30 +1,43 @@
-import { Box, Button, TextField, Typography } from "@material-ui/core";
+import { Box, Button, TextField, Typography, LinearProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import 'date-fns';
 import Grid from '@material-ui/core/Grid';
 import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  DatePicker,
-} from '@material-ui/pickers';
-import React, {useState} from "react";
+import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
+import React, {useState, useEffect} from "react";
 import Image from "next/image";
+import {useRouter} from "next/router";
+import axios, {AxiosResponse} from "axios";
+import CardLayout from "../../components/CardLayout";
+import {GitLabProject} from "../../interfaces/GitLabProject";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+
 
 const useStyles = makeStyles({
-  backgroundGradient: {
-    background: "radial-gradient(90% 180% at 50% 50%, #FFFFFF 0%, #FCA326 65%)",
-  },
   card: {
     background: "white",
   },
 });
 
+const LoadingBar = () => {
+  return <div>
+    <Typography variant={"body1"}>
+      Loading projects...
+    </Typography>
+    <LinearProgress />
+  </div>;
+}
 
 
 const index = () => {
     const classes = useStyles();
     const [startDate, setStartDate] = React.useState<Date | null>(new Date('01-02-2021'));
     const [endDate, setEndDate] =  React.useState<Date | null>(new Date('01-05-2021'));
+    const [projects, setProjects] = useState<GitLabProject[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const router = useRouter();
+    const { serverId } =  router.query;
+
 
     const handleStartChange = (date: Date | null) => {
         setStartDate(date);
@@ -32,59 +45,54 @@ const index = () => {
 
     const handleEndChange = (date: Date | null) => {
         setEndDate(date);
-      };
+    };
+
+    useEffect(() => {
+    if (router.isReady) {
+      // TODO need to pass serverId into this call to get the correct gitlab url and access code from db
+      // when that information is available in db
+      axios
+          .get(`${process.env.NEXT_PUBLIC_API_URL}/gitlab/projects`)
+          .then((resp: AxiosResponse) => {
+            setProjects(resp.data);
+            setIsLoading(false);
+          });
+    }
+    }, [serverId]);
+
+    let loadingBar =  null;
+    if (isLoading) {
+        loadingBar = <LoadingBar />;
+    }
+
+
 
     return (
-        <Box
-            className={classes.backgroundGradient}
-            height="100vh"
-            width="100vw"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-        >
-            <Box
-                className={classes.card}
-                boxShadow={20}
-                width="70vw"
-                height="70vh"
-                minWidth="60vw"
-                minHeight="60vw"
-                display="flex"
-                flexDirection="column"
-                justifyContent="center"
-                alignItems="center"
-                borderRadius={42}
-                padding="25px"
-            >
-                <Image
-                    src="/gitlab.svg"
-                    alt="The Gitlab Logo"
-                    width={100}
-                    height={100}
-                />
-                <Typography variant="h6" align="center">
-                    GitLab
-                    <br />
-                    Analyzer
-                </Typography>
+        <CardLayout>
+            {loadingBar}
+            {!isLoading && <Autocomplete
+                id="project-select"
+                options={projects}
+                getOptionLabel={(proj) => proj.name_with_namespace}
+                renderInput={(params) => <TextField {...params} label="Search Projects" variant="outlined" />}
+            /> }
 
-                <Box
+            <Box
                     className={classes.card}
                     boxShadow={20}
-                    width="70vw"
+                    width="60vw"
                     height="10vh"
-                    minWidth="60vw"
+                    minWidth="250px"
                     minHeight="10vh"
                     display="flex"
                     flexDirection="column"
                     justifyContent="column"
                     alignItems="column"
-                >
+            >
                     <div className='Date picker'>
                         <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid container justify="space-around">
-                                <DatePicker
+                                <KeyboardDatePicker
                                     disableToolbar
                                     variant="inline"
                                     format="dd/MM/yyyy"
@@ -100,7 +108,7 @@ const index = () => {
                                 
                                 />
                         
-                                <DatePicker
+                                <KeyboardDatePicker
                                     disableToolbar
                                     variant="inline"
                                     format="dd/MM/yyyy"
@@ -118,10 +126,8 @@ const index = () => {
                         </MuiPickersUtilsProvider>
                     </ div>
                 </Box>
+        </CardLayout>
 
-            </Box>
-
-        </Box>
     );
 };
         export default index;
