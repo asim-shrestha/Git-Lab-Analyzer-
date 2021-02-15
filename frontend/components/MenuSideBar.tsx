@@ -4,13 +4,13 @@ import { createMuiTheme, createStyles, withStyles, makeStyles, Theme, ThemeProvi
 import Button from "@material-ui/core/Button";
 import { Box, Icon } from "@material-ui/core";
 
-const BootstrapButton = withStyles({
+const MenuButton = withStyles({
   root: {
     boxShadow: 'none',
     textTransform: 'none',
     fontSize: 16,
     padding: '20px',
-    border: '1px solid',
+    border: '1px solid white',
     color: 'black',
     width: '80%',
     lineHeight: 0.8,
@@ -18,18 +18,6 @@ const BootstrapButton = withStyles({
     borderColor: 'none',
     borderRadius: '999px',
     margin: '20px 0',
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
     '&:hover': {
       backgroundColor: '#8FC6F3',
       borderColor: '#8FC6F3',
@@ -90,15 +78,14 @@ const MenuSideBar = () => {
         alignItems="center"
         >
 
-        <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin}>
+        <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
             Everyone
-        </BootstrapButton>
-
+        </MenuButton>
         <p className={classes.sidebar__breakpoint__text}>Contributors</p>
         <div className={classes.sidebar__breakpoint}></div>
-        <BootstrapButton variant="contained" color="primary" disableRipple className={classes.margin}>
+        <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
             memberName
-        </BootstrapButton>
+        </MenuButton>
       </Box>
   );
 };
