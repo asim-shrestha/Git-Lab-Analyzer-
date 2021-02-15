@@ -73,10 +73,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 // TODO: need to make an API request (backend should have contributors: id, name, etc),
-// populate an array of names, sort names alphabetically and display them using a mapping
-// into "sidebar__button"
+// populate an array of names, sort names alphabetically and display them using mapping
 
 const MenuSideBar = () => {
   const classes = useStyles();
