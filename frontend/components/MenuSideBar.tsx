@@ -1,8 +1,8 @@
 import React from "react";
 
-import { createMuiTheme, createStyles, withStyles, makeStyles, Theme, ThemeProvider, } from "@material-ui/core/styles";
+import {  withStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { Box, Icon } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 
 const MenuButton = withStyles({
   root: {
@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  backgroundGradient: {
-     background: "#187BCD",
+  background: {
+     background: theme.palette.primary.main,
   },
   card: {
      background: "white",
@@ -69,7 +69,7 @@ const MenuSideBar = () => {
 
   return (
   <Box
-        className={classes.backgroundGradient}
+        className={classes.background}
         height="100vh"
         width="16vw"
         display="flex"
