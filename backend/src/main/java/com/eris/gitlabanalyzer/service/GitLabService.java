@@ -159,4 +159,19 @@ public class GitLabService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         return headersSpec.retrieve().bodyToMono(GitLabMergeRequestChange.class).flatMapIterable(GitLabMergeRequestChange::getChanges);
     }
+
+    public Flux<GitLabMergeRequestNote> getMergeRequestNotes(Long projectId, Long mergeRequestIid) {
+        URI gitlabUrl = UriComponentsBuilder.fromUriString(serverUrl)
+                .path(projectPath + projectId + "/merge_requests/" + mergeRequestIid + "/notes")
+                .queryParam("per_page", 100)
+                .build()
+                .encode()
+                .toUri();
+
+        return webClient.get()
+                .uri(gitlabUrl)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .bodyToFlux(GitLabMergeRequestNote.class);
+    }
 }
