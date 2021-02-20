@@ -1,26 +1,23 @@
 import * as React from 'react';
 import Paper from '@material-ui/core/Paper';
-import {
-  Chart,
-  BarSeries,
-  Title,
-  ArgumentAxis,
-  ValueAxis,
-} from '@devexpress/dx-react-chart-material-ui';
-
+import { Chart, BarSeries, Title, ArgumentAxis, ValueAxis } from '@devexpress/dx-react-chart-material-ui';
 import { Animation } from '@devexpress/dx-react-chart';
 
+// From: https://devexpress.github.io/devextreme-reactive/react/chart/demos/bar/simple-bar/
+// TODO: replace data with real data, add x and y axis titles
+
 const data = [
-  { date: 'Jan 10', totalCount: 3 },
-  { date: 'Jan 15', totalCount: 20 },
-  { date: 'Jan 20', totalCount: 5 },
-  { date: 'Jan 25', totalCount: 8 },
-  { date: 'Jan 30', totalCount: 7 },
-  { date: 'Feb 5', totalCount: 12 },
-  { date: 'Feb 15', totalCount: 25 },
+  { date: 'Jan 10', totalCount: 2 },
+  { date: 'Jan 15', totalCount: 4 },
+  { date: 'Jan 20', totalCount: 20 },
+  { date: 'Jan 25', totalCount: 5 },
+  { date: 'Jan 30', totalCount: 17 },
+  { date: 'Feb 5', totalCount: 9 },
+  { date: 'Feb 10', totalCount: 9 },
+  { date: 'Feb 15', totalCount: 18 },
 ];
 
-export default class Demo extends React.PureComponent {
+export default class SingleBarGraph extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -38,13 +35,13 @@ export default class Demo extends React.PureComponent {
           data={chartData}
         >
           <ArgumentAxis />
-          <ValueAxis max={10} />
+          <ValueAxis max={7} />
 
           <BarSeries
-            valueField="Total Count"
-            argumentField="Date"
+            valueField="totalCount"
+            argumentField="date"
           />
-          <Title text="Daily Total of Commmit/Merge Requests by Everyone" />
+          <Title text="Daily Total of {commit or merge} Requests by Everyone" />
           <Animation />
         </Chart>
       </Paper>
