@@ -6,7 +6,6 @@ import { Box } from "@material-ui/core";
 
 const MenuButton = withStyles({
   root: {
-    boxShadow: 'none',
     textTransform: 'none',
     fontSize: 16,
     padding: '20px',
@@ -15,16 +14,13 @@ const MenuButton = withStyles({
     width: '80%',
     lineHeight: 0.8,
     backgroundColor: 'white',
-    borderColor: 'none',
     borderRadius: '999px',
     margin: '20px 0',
     '&:hover': {
       backgroundColor: '#8FC6F3',
       borderColor: '#8FC6F3',
-      boxShadow: 'none',
     },
     '&:active': {
-      boxShadow: 'none',
       backgroundColor: 'primary',
       borderColor: '#005cbf',
     },
