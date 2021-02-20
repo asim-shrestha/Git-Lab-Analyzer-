@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     textContainer1: {
         flexDirection: 'column',
-        margin: '0px 0px 0px 8px',
+        margin: '0px 0px 0px 15px',
     },
     textContainer2: {
         justifyContent: 'flex-end',
