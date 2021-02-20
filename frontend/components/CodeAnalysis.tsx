@@ -1,15 +1,12 @@
 import React from "react";
 
-import SingleBarGraph from "./SingleBarGraph";
-
-
 import { makeStyles, withStyles, Theme, createStyles } from '@material-ui/core/styles';
 import { green, purple } from '@material-ui/core/colors';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox, { CheckboxProps } from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
-import Box from '@material-ui/core/Box';
+import SingleBarGraph from "./SingleBarGraph";
 
 const GreenCheckbox = withStyles({
   root: {
@@ -31,13 +28,16 @@ const PurpleCheckbox = withStyles({
   checked: {},
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
+// TODO: add real data based on gitlab API request and analysis for the
+//       repo name, commit score, merge request score, repo avatar
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    flex1: {
+    container1: {
         display: 'flex',
         width: '100%',
     },
-    flex2: {
+    container2: {
         display: 'flex',
         justifyContent: 'flex-start',
         width: '75%',
@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
     outerContainer: {
         flexDirection: 'column',
         width: '100%',
-
     },
     textContainer1: {
         flexDirection: 'column',
@@ -66,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) =>
         justifyContent: 'space-around',
         flexDirection: 'column',
     },
-    large: {
+    avatarSize: {
           width: theme.spacing(15),
           height: theme.spacing(15),
     },
@@ -87,9 +86,9 @@ const CodeAnalysis = () => {
     return (
         <>
             <div className={classes.outerContainer}>
-                <div className={classes.flex1}>
-                    <div className={classes.flex2}>
-                        <Avatar className={classes.large} variant='square'>R</Avatar>
+                <div className={classes.container1}>
+                    <div className={classes.container2}>
+                        <Avatar className={classes.avatarSize} variant='square'>R</Avatar>
                         <div className={classes.textContainer1}>
                             <h1>Repo Name</h1>
                             <p>- 110 Commits - 11 Merge Request -</p>
@@ -102,8 +101,7 @@ const CodeAnalysis = () => {
                 </div>
                 <div className={classes.container3}>
                     <div className={classes.graphContainer}>
-                        <p> Daily Total of Commit/Merge Requests by Everyone </p>
-
+                        <p> (graph placeholder)            </p>
                     </div>
                     <FormGroup>
                         <FormControlLabel
@@ -118,7 +116,6 @@ const CodeAnalysis = () => {
                 </div>
                 <div className={classes.container3}>
                     <div className={classes.graphContainer}>
-                        <p> Daily Total Score of Commit/Merge Requests by Everyone </p>
                         <p> (graph placeholder)            </p>
                     </div>
                     <FormGroup>
