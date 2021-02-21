@@ -2,7 +2,7 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React, {useEffect, useState, memo} from "react";
 import axios, {AxiosResponse} from "axios";
 
-import NavBar from "../../components/NavBar";
+import NavBar from "../../../../components/NavBar";
 import {
     Box,
     Card,
@@ -17,86 +17,109 @@ import {
 import {FixedSizeList, areEqual} from 'react-window';
 import memoize from 'memoize-one';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import {Note} from "../../../../interfaces/GitLabNote";
+import {MergeRequest} from "../../../../interfaces/GitLabMergeRequest";
+import {Issue} from "../../../../interfaces/GitLabIssue";
+import {Task} from "../../../../interfaces/GitLabTask";
+import {useRouter} from "next/router";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {},
-        card: {
-            padding: theme.spacing(1),
+        appBarSpacer: theme.mixins.toolbar,
+        taskList: {
             overflow: 'auto',
             height: '75vh',
         },
-        appBarSpacer: theme.mixins.toolbar,
-        content: {
-            flexGrow: 1,
-        },
-        container: {
-            paddingTop: theme.spacing(2),
-            paddingBottom: theme.spacing(2),
-        },
-        sticky: {},
-        overflow: {
+        notesList: {
             overflow: 'auto',
             height: '80vh',
         },
-        inline: {
-            display: 'inline',
-        },
     }),
 );
-
-interface Note {
-    id: number;
-    name: string;
-    email: string;
-    body: string;
-}
 
 enum NoteType {
     MergeRequest,
     Issue
 }
 
-// const URL = `${process.env.NEXT_PUBLIC_API_URL}/gitlab/projects/5/merge_request/10/notes`
-const URL = "https://jsonplaceholder.typicode.com/comments";
-
 const index = () => {
-    const [notes, setNotes] = useState<Note[]>([]);
-    const [mergeRequests, setMergeRequests] = useState<Note[]>([]);
+    const router = useRouter();
+    const { projectId } =  router.query;
+    const PROJECT_ID_URL = `${process.env.NEXT_PUBLIC_API_URL}/gitlab/projects/${projectId}`;
 
-    const [selectedItem, setSelectedItem] = useState(0);
-    const handleSelectItem = (
-        index: number,
-    ) => {
-        axios
-            .get(`${URL}?postId=${selectedItem + 1}`)
-            .then((resp: AxiosResponse) => {
-                setNotes(resp.data);
-            });
-        setSelectedItem(index);
-    };
+    const [mergeRequests, setMergeRequests] = useState<MergeRequest[]>([]);
+    const [issues, setIssues] = useState<Issue[]>([]);
+    const [notes, setNotes] = useState<Note[]>([]);
 
     const [noteType, setNoteType] = React.useState(NoteType.MergeRequest);
+
     const handleSelectNoteType = (event: React.ChangeEvent<HTMLInputElement>) => {
         setNoteType(Number((event.target as HTMLInputElement).value));
     };
 
-
     useEffect(() => {
+        handleSelectItem(0);
+    }, [noteType]);
+
+    const [selectedItem, setSelectedItem] = useState(0);
+
+    const getMergeRequestNotes = (mergeRequestIid: number) => {
         axios
-            .get(URL)
+            .get(`${PROJECT_ID_URL}/merge_requests/${mergeRequestIid}/notes`)
             .then((resp: AxiosResponse) => {
                 setNotes(resp.data);
-                setMergeRequests(resp.data);
-            });
-    }, []);
+            })
+    };
 
+    const getIssueNotes = (issueIid: number) => {
+        axios
+            .get(`${PROJECT_ID_URL}/issues/${issueIid}/notes`)
+            .then((resp: AxiosResponse) => {
+                setNotes(resp.data);
+            });
+    };
+
+    const handleSelectItem = (
+        index: number,
+    ) => {
+        setSelectedItem(index);
+        if (noteType === NoteType.MergeRequest) {
+            if (mergeRequests?.[index]?.iid) {
+                getMergeRequestNotes(mergeRequests[index].iid);
+            }
+        } else {
+            if (issues?.[index]?.iid) {
+                getIssueNotes(issues[index].iid);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if(projectId){
+            axios
+                .get(`${PROJECT_ID_URL}/merge_requests?startDateTime=2021-01-01T08:00:00Z&endDateTime=2021-03-15T08:00:00Z`)
+                .then((resp: AxiosResponse) => {
+                    setMergeRequests(resp.data);
+                });
+            axios
+                .get(`${PROJECT_ID_URL}/issues`)
+                .then((resp: AxiosResponse) => {
+                    setIssues(resp.data);
+                });
+        }
+
+    }, [projectId]);
+
+    // first item is selected on page load
+    useEffect(() => {
+        handleSelectItem(0);
+    }, [mergeRequests]);
 
     const classes = useStyles();
     return (
-        <Box className={classes.root}>
+        <Box>
             <NavBar/>
-            <div className={classes.appBarSpacer}/>
+            <Box className={classes.appBarSpacer}/>
             <Container maxWidth='xl'>
                 <Grid container spacing={2}>
 
@@ -105,10 +128,13 @@ const index = () => {
                             <Box style={{display: 'flex', justifyContent: 'center'}}>
                                 <RadioGroupSelectMergeRequestsOrIssues
                                     value={noteType}
-                                    handleChange={handleSelectNoteType}/>
+                                    handleChange={handleSelectNoteType}
+                                    numMergeRequests={mergeRequests.length}
+                                    numIssues={issues.length}
+                                />
                             </Box>
-                            <Box className={classes.card}>
-                                <MergeRequestList items={mergeRequests}
+                            <Box className={classes.taskList}>
+                                <TaskList items={noteType === NoteType.MergeRequest ? mergeRequests : issues}
                                                   selectedItem={selectedItem}
                                                   handleSelectedItemChange={handleSelectItem}/>
                             </Box>
@@ -126,10 +152,12 @@ const index = () => {
     );
 };
 
-const RadioGroupSelectMergeRequestsOrIssues = ({value, handleChange}
+const RadioGroupSelectMergeRequestsOrIssues = ({value, handleChange, numMergeRequests, numIssues}
                                                    : {
     value: NoteType,
-    handleChange: React.Dispatch<React.ChangeEvent<HTMLInputElement>>
+    handleChange: React.Dispatch<React.ChangeEvent<HTMLInputElement>>,
+    numMergeRequests: number,
+    numIssues : number,
 }) => {
 
     return (
@@ -142,12 +170,12 @@ const RadioGroupSelectMergeRequestsOrIssues = ({value, handleChange}
                 <FormControlLabel
                     value={NoteType.MergeRequest}
                     control={<Radio color="primary" size="small"/>}
-                    label="Merge Requests"
+                    label={`${numMergeRequests} Merge Requests`}
                 />
                 <FormControlLabel
                     value={NoteType.Issue}
                     control={<Radio color="secondary" size="small"/>}
-                    label="Issues"
+                    label={`${numIssues} Issues`}
                 />
             </RadioGroup>
         </FormControl>
@@ -156,7 +184,7 @@ const RadioGroupSelectMergeRequestsOrIssues = ({value, handleChange}
 
 const Row = memo(({data, index, style}
                       : {
-    data: { items: Note[], selectedItem: number, setSelectedItem: React.Dispatch<number> },
+    data: { items: Task[], selectedItem: number, setSelectedItem: React.Dispatch<number> },
     index: number,
     style: React.CSSProperties
 }) => {
@@ -173,13 +201,13 @@ const Row = memo(({data, index, style}
             style={style}
         >
             <ListItemText
-                primary={"21-Pull-repo-Information-from-gitlab-server"}
-                secondary={"!11 · opened 1 day ago by Jason Lee"}/>
+                primary={item.title}
+                secondary={`#${item.iid} · opened ${item.created_at} by ${item.author.name}`}/>
         </ListItem>
     );
 }, areEqual);
 
-const createItemData = memoize((items: Note[],
+const createItemData = memoize((items: Task[],
                                 selectedItem: number,
                                 setSelectedItem: React.Dispatch<number>) => ({
     items,
@@ -187,16 +215,15 @@ const createItemData = memoize((items: Note[],
     setSelectedItem,
 }));
 
-function MergeRequestList({items, selectedItem, handleSelectedItemChange}
+const TaskList = ({items, selectedItem, handleSelectedItemChange}
                               : {
-                              items: Note[],
+                              items: Task[],
                               selectedItem: number,
                               handleSelectedItemChange: React.Dispatch<number>
                           }
-) {
+) => {
 
     const itemData = createItemData(items, selectedItem, handleSelectedItemChange);
-    const classes = useStyles();
     return (
         <AutoSizer>
             {({height, width}) => (
@@ -206,8 +233,6 @@ function MergeRequestList({items, selectedItem, handleSelectedItemChange}
                     itemData={itemData}
                     itemSize={100}
                     width={width}
-                    className={classes.overflow}
-
                 >
                     {Row}
                 </FixedSizeList>
@@ -220,20 +245,21 @@ const NotesList = ({notes}: { notes: Note[] }) => {
     const classes = useStyles();
 
     return (
-        <List subheader={<ListSubheader disableSticky>Notes</ListSubheader>} className={classes.overflow}>
+        <List subheader={<ListSubheader disableSticky>{`${notes.length} Notes`}</ListSubheader>}
+              className={classes.notesList}
+        >
             {notes.map((note) => (
-                <ListItem>
+                <ListItem key = {note.id}>
                     <ListItemText
                         primary={
                             <React.Fragment>
-                                {"First Last "}
+                                {`${note.author.name} `}
                                 <Typography
                                     component="span"
                                     variant="body2"
-                                    className={classes.inline}
                                     color="textSecondary"
                                 >
-                                    {"@flast · 6 hours ago"}
+                                    {`@${note.author.username} · ${note.created_at}`}
                                 </Typography>
                             </React.Fragment>}
                         secondary={note.body}/>
@@ -241,6 +267,6 @@ const NotesList = ({notes}: { notes: Note[] }) => {
             ))}
         </List>
     );
-}
+};
 
 export default index;
