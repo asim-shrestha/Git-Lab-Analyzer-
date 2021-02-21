@@ -3,13 +3,8 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../styles/theme";
 import "../styles/globals.css";
+import NavBar from "../components/NavBar";
 import type { AppProps } from "next/app";
-import {SnackbarOrigin, SnackbarProvider} from 'notistack';
-
-const snackBarAnchorOrigin: SnackbarOrigin = {
-    vertical: 'top',
-    horizontal: 'center',
-}
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -21,9 +16,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-          <SnackbarProvider maxSnack={3} anchorOrigin={snackBarAnchorOrigin}>
-            <Component {...pageProps} />
-          </SnackbarProvider>
+        <Component {...pageProps} />
       </ThemeProvider>
     </>
   );

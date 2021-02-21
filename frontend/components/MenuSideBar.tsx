@@ -3,6 +3,7 @@ import React from "react";
 import {  withStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Box } from "@material-ui/core";
+import NavBar from "./NavBar";
 
 const MenuButton = withStyles({
   root: {
@@ -64,7 +65,7 @@ const MenuSideBar = () => {
   const classes = useStyles();
 
   return (
-  <Box
+    <Box
         className={classes.background}
         height="100vh"
         width="16vw"
@@ -73,16 +74,21 @@ const MenuSideBar = () => {
         justifyContent="flex-start"
         alignItems="center"
         >
-
         <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
             Everyone
         </MenuButton>
         <p className={classes.sidebar__breakpoint__text}>Contributors</p>
         <div className={classes.sidebar__breakpoint}></div>
         <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
-            memberName
+            Bob
         </MenuButton>
-      </Box>
+        <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
+            Phil
+        </MenuButton>
+        <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
+            Stacey
+        </MenuButton>
+    </Box>
   );
 };
 
