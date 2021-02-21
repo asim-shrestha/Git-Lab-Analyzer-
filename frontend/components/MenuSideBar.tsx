@@ -1,6 +1,6 @@
 import React from "react";
 
-import {  withStyles, makeStyles } from "@material-ui/core/styles";
+import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import { Box } from "@material-ui/core";
 import NavBar from "./NavBar";
@@ -45,17 +45,6 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       borderRadius: "999"
   },
-  sidebar__breakpoint__text: {
-    fontSize: '16px',
-    color: 'white',
-    marginTop: 0,
-    marginBottom: 0,
-  },
-  sidebar__breakpoint: {
-     backgroundColor: 'white',
-     width: '100%',
-     height: '2.5px',
-  },
 }));
 
 // TODO: need to make an API request (backend should have contributors: id, name, etc),
@@ -77,8 +66,6 @@ const MenuSideBar = () => {
         <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
             Everyone
         </MenuButton>
-        <p className={classes.sidebar__breakpoint__text}>Contributors</p>
-        <div className={classes.sidebar__breakpoint}></div>
         <MenuButton variant="contained" color="primary" disableRipple className={classes.margin}>
             Bob
         </MenuButton>
